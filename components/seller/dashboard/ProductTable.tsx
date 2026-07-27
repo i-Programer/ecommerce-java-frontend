@@ -68,7 +68,7 @@ export function ProductTable({ products }: ProductTableProps) {
           )}
         </div>
         <button
-          onClick={() => router.push("/products/create")}
+          onClick={() => router.push("/seller/products/create")}
           className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800"
         >
           <Plus className="h-4 w-4" />
@@ -137,7 +137,7 @@ export function ProductTable({ products }: ProductTableProps) {
                 <td className="px-4 py-3 text-right">
                   <div className="flex justify-end gap-2">
                     <button
-                      onClick={() => router.push(`/products/${product.id}/edit`)}
+                      onClick={() => router.push(`/seller/products/edit/${product.id}`)}
                       className="p-1 hover:bg-gray-100 rounded"
                     >
                       <Edit className="h-4 w-4 text-gray-600" />

@@ -79,13 +79,25 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ProductImageDTO: {
+            /** Format: uuid */
+            id?: string;
+            url?: string;
+            isPrimary?: boolean;
+        };
         ProductRequestDTO: {
+            sku: string;
             name: string;
             description?: string;
-            price?: number;
+            price: number;
+            /** Format: int32 */
+            stockQuantity: number;
             /** Format: uuid */
             categoryId: string;
-            sku?: string;
+            images?: components["schemas"]["ProductImageDTO"][];
+            attributes?: {
+                [key: string]: Record<string, never>;
+            };
             isActive?: boolean;
         };
         CategoryDTO: {
@@ -100,9 +112,19 @@ export interface components {
             name?: string;
             description?: string;
             price?: number;
+            /** Format: int32 */
+            stockQuantity?: number;
+            images?: components["schemas"]["ProductImageDTO"][];
+            attributes?: {
+                [key: string]: Record<string, never>;
+            };
             sku?: string;
             isActive?: boolean;
             category?: components["schemas"]["CategoryDTO"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
         };
         CategoryResponseDTO: {
             name?: string;
