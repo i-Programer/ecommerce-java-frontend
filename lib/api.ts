@@ -47,7 +47,6 @@ export const productApi = {
             },
             body: JSON.stringify(product),
         });
-        console.log(res)
         if (!res.ok) {
             throw new Error("Failed to create product");
         }
@@ -65,7 +64,6 @@ export const productApi = {
             },
             body: JSON.stringify(data),
         });
-        console.log(res)
         if (!res.ok) {
             throw new Error(`Failed to update product with id ${id}`);
         }
