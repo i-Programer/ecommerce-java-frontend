@@ -77,7 +77,7 @@ export const productApi = {
         const rest = await fetch(url, {
             method: "DELETE",
         });
-
+        
         if (!rest.ok) {
             throw new Error (`Failed to delete product with id ${id}`);
         }

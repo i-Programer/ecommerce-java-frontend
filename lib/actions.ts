@@ -45,9 +45,7 @@ export async function updateProduct(id:string, data: ProductRequestDTO) {
 
 export async function deleteProduct(id: string) {
     try {
-        console.log("waiting to delete product")
         await productApi.delete(id);
-        console.log("product deleted")
         revalidatePath("/products");
         return { success: true }
     } catch (error) {
