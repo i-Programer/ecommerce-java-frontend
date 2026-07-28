@@ -73,13 +73,16 @@ export const productApi = {
     },
 
     delete: async (id: string): Promise<void> => {
-        const rest = await fetch(`/api/seller/products/${id}`, {
+        const baseUrl = getBaseUrl();
+        const url = baseUrl ? `${baseUrl}/api/seller/products/${id}` : `/api/seller/products/${id}`
+
+        const rest = await fetch(url, {
             method: "DELETE",
         });
+
         if (!rest.ok) {
             throw new Error (`Failed to delete product with id ${id}`);
         }
-        return rest.json();
     }
 };
 

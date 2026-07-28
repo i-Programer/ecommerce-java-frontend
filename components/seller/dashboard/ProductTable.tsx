@@ -22,10 +22,11 @@ export function ProductTable({ products }: ProductTableProps) {
 
     try {
       await deleteProduct(id)
-      router.refresh
+      router.refresh();
     } catch (error) {
       alert("Failed to delete product")
     } finally {
+      alert("Succeed to delete product");
       setIsDeleting(false)
     }
   };
@@ -50,10 +51,8 @@ export function ProductTable({ products }: ProductTableProps) {
     switch (status) {
       case "active": return "bg-green-100 text-green-800";
       case "draft": return "bg-yellow-100 text-yellow-800";
-      case "archived": return "bg-gray-100 text-gray-800";
     }
   };
-
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -127,7 +126,7 @@ export function ProductTable({ products }: ProductTableProps) {
                   ${product.price.toFixed(2)}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
-                  {product.stock}
+                  {product.stockQuantity}
                 </td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex px-2 py-1 text-xs rounded-full ${getStatusColor(product.status)}`}>

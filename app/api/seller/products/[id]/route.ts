@@ -48,6 +48,7 @@ export async function PUT(request: Request, { params }: Params) {
 export async function DELETE(request: Request, { params }: Params) {
     const { id } = await params;
 
+    console.log("reaching the route.ts to delete product")
     try {
         const res = await fetch(`http://localhost:4007/products/${id}`, {
             method: `DELETE`,
@@ -56,6 +57,7 @@ export async function DELETE(request: Request, { params }: Params) {
             },
         });
 
+        console.log(res)
         if (!res.ok) throw new Error("Gagal mengambil data dari Java API");
 
         const data = await res.json();
