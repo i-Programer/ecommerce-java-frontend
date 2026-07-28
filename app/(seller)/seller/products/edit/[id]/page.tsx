@@ -35,7 +35,7 @@ export default function EditProductPage() {
     try {
       const result = await updateProduct(params.id as string, data);
       if (result.success) {
-        router.push("/products");
+        router.push("/seller/products");
         router.refresh();
       } else {
         alert(result.error || "Failed to update product");

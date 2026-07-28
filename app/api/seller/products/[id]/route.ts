@@ -24,7 +24,7 @@ export async function GET(request: Request, { params }: Params) {
     }
 }
 
-export async function UPDATE(request: Request, { params }: Params) {
+export async function PUT(request: Request, { params }: Params) {
     const { id } = await params;
 
     try {

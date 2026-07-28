@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ProductUI, mapUIToRequest } from "@/types";
+import { ProductFormData, ProductUI, mapUIToRequest } from "@/types";
 import { CategoryDTO } from "@/types";
 import { getCategories } from "@/lib/actions";
 
@@ -16,13 +16,16 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
   const router = useRouter();
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState<ProductFormData>({
     name: product?.name || "",
     description: product?.description || "",
     price: product?.price || 0,
+    stockQuantity: product?.stockQuantity ?? 0,
     categoryId: product?.categoryId || "",
     sku: product?.sku || "",
-    status: product?.isActive ? "active" : "draft",
+    status: product ? (product.isActive ? "active" : "draft") : "draft",
+    attributes: product?.attributes,
   });
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
           required
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
           placeholder="Enter product name"
         />
       </div>
@@ -66,15 +69,15 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
           Description
         </label>
         <textarea
-          value={formData.description}
+          value={formData.description || ""}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
           placeholder="Enter product description"
           rows={3}
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Price ($) *
@@ -85,20 +88,38 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
             min="0"
             step="0.01"
             value={formData.price}
-            onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
             placeholder="0.00"
           />
         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            SKU
+            Stock Quantity *
+          </label>
+          <input
+            type="number"
+            required
+            min="0"
+            step="1"
+            value={formData.stockQuantity}
+            onChange={(e) => setFormData({ ...formData, stockQuantity: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
+            placeholder="0"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            SKU *
           </label>
           <input
             type="text"
+            required
             value={formData.sku}
             onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
             placeholder="Enter SKU"
           />
         </div>
@@ -112,7 +133,7 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
           required
           value={formData.categoryId}
           onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
           disabled={loadingCategories}
         >
           <option value="">
@@ -132,8 +153,8 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
         </label>
         <select
           value={formData.status}
-          onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-200"
+          onChange={(e) => setFormData({ ...formData, status: e.target.value as "active" | "draft" })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
         >
           <option value="draft">Draft</option>
           <option value="active">Active</option>

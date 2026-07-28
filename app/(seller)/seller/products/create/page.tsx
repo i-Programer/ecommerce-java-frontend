@@ -16,7 +16,7 @@ export default function CreateProductPage() {
     try {
       const result = await createProduct(data)
       if(result.success) {
-        router.push("/products")
+        router.push("/seller/products")
         router.refresh();
       } else {
         alert(result.error || "Failed to create product")

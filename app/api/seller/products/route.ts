@@ -32,8 +32,13 @@ export async function POST(request: Request) {
 
      const data = await res.json();
 
+    console.log(JSON.stringify(body));
+    // console.log("waiting");
+    // console.log("route.ts res:", res);
     if (!res.ok) throw new Error('Failed to create data to Java API');
-
+    // console.log("success");
+    // console.log("route.ts res:", res);
+    
     return NextResponse.json(data);
   
   } catch (error) {

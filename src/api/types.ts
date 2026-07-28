@@ -127,9 +127,9 @@ export interface components {
             updatedAt?: string;
         };
         CategoryResponseDTO: {
-            name?: string;
             /** Format: uuid */
-            parentId?: string;
+            id?: string;
+            name?: string;
         };
     };
     responses: never;
