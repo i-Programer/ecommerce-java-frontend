@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ProductFormData, ProductUI, mapUIToRequest } from "@/types";
+import { ProductFormData, ProductUI, mapUIToRequest, ProductAttributes } from "@/types";
 import { CategoryDTO } from "@/types";
 import { getCategories } from "@/lib/actions";
 
@@ -12,10 +12,23 @@ interface ProductFormProps {
   isSubmitting?: boolean;
 }
 
+interface AttributePair {
+  key: string;
+  value: string;
+}
+
 export function ProductForm({ product, onSubmit, isSubmitting = false }: ProductFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<CategoryDTO[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+
+  const [attributePairs, setAttributePairs] = useState<AttributePair[]>(() => {
+    if (!product?.attributes) return [];
+    return Object.entries(product.attributes).map(([key, value]) => ({
+      key,
+      value: String(value ?? ""),
+    }));
+  });
 
   const [formData, setFormData] = useState<ProductFormData>({
     name: product?.name || "",
@@ -42,9 +55,44 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
     loadCategories();
   }, []);
 
+  const handleAddAttribute = () => {
+    setAttributePairs((prev) => [...prev, { key: "", value: "" }]);
+  };
+
+  const handleRemoveAttribute = (index: number) => {
+    setAttributePairs((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAttributeChange = (
+    index: number,
+    field: "key" | "value",
+    val: string
+  ) => {
+    setAttributePairs((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: val };
+      return updated;
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const requestData = mapUIToRequest(formData);
+
+    const attributesMap: ProductAttributes = {};
+    attributePairs.forEach(({ key, value }) => {
+      const trimmedKey = key.trim();
+      if (trimmedKey) {
+        attributesMap[trimmedKey] = value;
+      }
+    });
+
+    // Merge the latest attributes map into formData
+    const finalFormData: ProductFormData = {
+      ...formData,
+      attributes: Object.keys(attributesMap).length > 0 ? attributesMap : undefined,
+    };
+    
+    const requestData = mapUIToRequest(finalFormData);
     onSubmit(requestData);
   };
 
@@ -145,6 +193,55 @@ export function ProductForm({ product, onSubmit, isSubmitting = false }: Product
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="border-t border-gray-200 pt-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h3 className="text-sm font-medium text-gray-700">Product Attributes</h3>
+            <p className="text-xs text-gray-500">Add custom key-value specifications (e.g., Color: Blue, Size: XL)</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleAddAttribute}
+            className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-300"
+          >
+            + Add Attribute
+          </button>
+        </div>
+
+        {attributePairs.length > 0 ? (
+          <div className="space-y-3">
+            {attributePairs.map((pair, index) => (
+              <div key={index} className="flex gap-3 items-center">
+                <input
+                  type="text"
+                  placeholder="Attribute name (e.g., Material)"
+                  value={pair.key}
+                  onChange={(e) => handleAttributeChange(index, "key", e.target.value)}
+                  className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
+                />
+                <input
+                  type="text"
+                  placeholder="Value (e.g., Cotton)"
+                  value={pair.value}
+                  onChange={(e) => handleAttributeChange(index, "value", e.target.value)}
+                  className="w-1/2 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none text-gray-900 focus:ring-2 focus:ring-gray-200"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveAttribute(index)}
+                  className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                  title="Remove Attribute"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-gray-400 italic">No custom attributes added yet.</p>
+        )}
       </div>
 
       <div>

@@ -10,7 +10,7 @@ export default async function DashboardPage() {
     totalProducts: products.length,
     totalValue: products.reduce((sum, p) => sum + p.price, 0),
     activeProducts: products.filter(p => p.status === "active").length,
-    outOfStock: products.filter(p => p.stock === 0).length,
+    outOfStock: products.filter(p => p.stockQuantity === 0).length,
   };
 
   const statCards = [
@@ -45,13 +45,12 @@ export default async function DashboardPage() {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Products</h2>
         <div className="space-y-3">
           {products.slice(0, 5).map((product) => (
-            <div key={product.id} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
-              <div>
-                <span className="font-medium">{product.name}</span>
+            <div key={product.id} className="grid grid-cols-4 py-2 border-b border-gray-100 last:border-0">
+                <span className="font-medium text-gray-500">{product.name}</span>
                 {product.sku && (
                   <span className="text-sm text-gray-500 ml-2">SKU: {product.sku}</span>
                 )}
-              </div>
+              <span className="text-gray-600">{product.stockQuantity}</span>
               <span className="text-gray-600">${product.price.toFixed(2)}</span>
             </div>
           ))}

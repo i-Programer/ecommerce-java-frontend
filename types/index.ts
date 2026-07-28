@@ -51,7 +51,7 @@ export function mapProductToUI(product: ProductResponseDTO): ProductUI {
     sku: product.sku ?? "",
     isActive: active,
     images: product.images,
-    attributes: product.attributes,
+    attributes: parsedAttributes,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   };
